@@ -1,30 +1,66 @@
-# NL → BigQuery Insights (Talk to Data)
+# Talk to the Data + Semantic Model Generator
 
-This project uses a skills-style agent called `talk_to_data`.
+This project contains **two agents in the same Streamlit application**:
 
-## Updated skill layout
-Each capability now lives under the agent folder:
-- `skills/talk_to_data/planner/SKILL.md`
-- `skills/talk_to_data/sql_generator/SKILL.md`
-- `skills/talk_to_data/sql_validator/SKILL.md`
-- `skills/talk_to_data/narrator/SKILL.md`
+1. **Talk to Data**  
+   Lets users ask natural-language questions against BigQuery tables using a semantic model.
 
-Each `SKILL.md` now follows the dbt-agent-skills style template with YAML front matter plus structured markdown guidance.
+2. **Semantic Model Generator**  
+   Lets users generate semantic models from:
+   - a **local SQL model**
+   - a **single BigQuery table**
+   - or **all tables in a BigQuery dataset**  
+   The generated semantic models can then be used by the Talk to Data agent.
 
-## UI behavior
-The Streamlit sidebar now supports:
-- dataset selection
-- table selection within the chosen dataset
-- switching between a dynamic single-table semantic context and the configured semantic model
+---
 
-Dynamic table mode reads the selected BigQuery table schema and builds a lightweight semantic context so the user can ask questions against that table directly.
+## Project Goals
 
+The project is designed to provide an end-to-end workflow for natural language analytics:
 
-## Updated UI behavior
+- select a BigQuery dataset and table
+- use a matching semantic model
+- generate SQL from user questions
+- validate and repair SQL if needed
+- execute queries on BigQuery
+- render results, insights, and charts
+- generate semantic models when one does not exist
 
-The sidebar now has three explicit dropdowns:
-- Dataset
-- Table
-- Semantic model (loaded from the local `semantic_models/` folder)
+---
 
-The app no longer auto-generates a semantic model from the selected table schema. The selected local semantic model file is the only semantic context used during planning and SQL generation.
+## Features
+
+### Talk to Data
+- dataset dropdown
+- table dropdown based on selected dataset
+- semantic model auto-matched by table name
+- technical details view for:
+  - planner output
+  - generated SQL
+- SQL repair loop for invalid BigQuery SQL
+- results table
+- auto charting
+- insights generation
+- chart improvements for:
+  - trends over time
+  - correlation / relationship questions
+  - grouped categorical analysis
+
+### Semantic Model Generator
+- local SQL model input
+- BigQuery single-table semantic model generation
+- BigQuery whole-dataset generation
+- generates **one semantic model per table** for dataset mode
+- preview generated YAML before save
+- save only when user clicks **Save Semantic Model**
+- supports integration with Talk to Data workflow when no semantic model exists for a selected table
+
+---
+
+## Current Architecture
+
+### Agent 1: `talk_to_data`
+Located under:
+
+```text
+skills/talk_to_data/
