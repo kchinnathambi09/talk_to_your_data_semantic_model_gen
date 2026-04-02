@@ -1,0 +1,59 @@
+model_name: customers_demo_model
+default_dataset: agentic_ai_demo
+tables:
+  customers_demo:
+    description: Semantic model for customers_demo
+    fully_qualified_name: da-aaa-aca.agentic_ai_demo.customers_demo
+    primary_key: customer_id
+    columns: {}
+metrics:
+  average_age:
+    description: Average age of customers
+    label: Average Age
+    expr: AVG(age)
+  customer_count:
+    description: Total number of customers
+    label: Customer Count
+    expr: COUNT(customer_id)
+dimensions:
+- name: customer_id
+  expr: customer_id
+  type: STRING
+  description: ''
+- name: first_name
+  expr: first_name
+  type: STRING
+  description: ''
+- name: last_name
+  expr: last_name
+  type: STRING
+  description: ''
+- name: email
+  expr: email
+  type: STRING
+  description: ''
+- name: age
+  expr: age
+  type: INTEGER
+  description: ''
+- name: gender
+  expr: gender
+  type: STRING
+  description: ''
+- name: state
+  expr: state
+  type: STRING
+  description: ''
+- name: signup_date
+  expr: signup_date
+  type: DATE
+  description: ''
+- name: loyalty_tier
+  expr: loyalty_tier
+  type: STRING
+  description: ''
+defaults:
+  time_dimension: signup_date
+  max_rows: 200
+  require_time_filter: false
+  time_filter_default_days: 30

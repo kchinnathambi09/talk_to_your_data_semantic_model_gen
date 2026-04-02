@@ -1,0 +1,150 @@
+model_name: fct_orders_enriched
+default_dataset: curated_models_enriched
+
+tables:
+  fct_orders_enriched:
+    description: Enriched order fact table with customer, revenue, discount, payment, channel, and store attributes.
+    fully_qualified_name: da-aaa-aca.curated_models_enriched.fct_orders_enriched
+    primary_key: order_id
+    columns:
+      order_id:
+        type: STRING
+        description: Unique order identifier
+      purchase_date:
+        type: DATE
+        description: Date when the order was placed
+      customer_id:
+        type: STRING
+        description: Unique customer identifier
+      customer_name:
+        type: STRING
+        description: Customer name
+      customer_state:
+        type: STRING
+        description: Two-letter US state code for the customer
+      loyalty_tier:
+        type: STRING
+        description: Loyalty tier of the customer
+      order_line_count:
+        type: INT64
+        description: Number of order lines in the order
+      total_quantity:
+        type: INT64
+        description: Total quantity of items in the order
+      gross_amount:
+        type: FLOAT64
+        description: Gross order amount before discounts
+      net_revenue:
+        type: FLOAT64
+        description: Net revenue after discounts
+      total_discount_amount:
+        type: FLOAT64
+        description: Total discount amount for the order
+      avg_discount_pct:
+        type: FLOAT64
+        description: Average discount percentage applied to the order
+      channel:
+        type: STRING
+        description: Sales channel
+      payment_method:
+        type: STRING
+        description: Payment method used for the order
+      store:
+        type: STRING
+        description: Store associated with the order
+
+metrics:
+  total_orders:
+    description: Total distinct orders
+    label: total orders
+    expr: "COUNT(DISTINCT t.order_id)"
+
+  total_customers:
+    description: Total distinct customers
+    label: total customers
+    expr: "COUNT(DISTINCT t.customer_id)"
+
+  total_order_lines:
+    description: Total order lines
+    label: total order lines
+    expr: "SUM(t.order_line_count)"
+
+  total_quantity:
+    description: Total quantity sold
+    label: total quantity
+    expr: "SUM(t.total_quantity)"
+
+  total_gross_amount:
+    description: Total gross sales amount
+    label: total gross amount
+    expr: "SUM(t.gross_amount)"
+
+  total_net_revenue:
+    description: Total net revenue
+    label: total net revenue
+    expr: "SUM(t.net_revenue)"
+
+  total_discount_amount:
+    description: Total discount amount
+    label: total discount amount
+    expr: "SUM(t.total_discount_amount)"
+
+  average_discount_pct:
+    description: Average discount percentage
+    label: average discount percent
+    expr: "AVG(t.avg_discount_pct)"
+
+  average_order_value:
+    description: Average order value
+    label: average order value
+    expr: "SAFE_DIVIDE(SUM(t.net_revenue), COUNT(DISTINCT t.order_id))"
+
+dimensions:
+  - name: purchase_date
+    expr: "t.purchase_date"
+    type: DATE
+    description: Date when the order was placed
+
+  - name: customer_name
+    expr: "t.customer_name"
+    type: STRING
+    description: Customer name
+
+  - name: customer_state
+    expr: "t.customer_state"
+    type: STRING
+    description: Two-letter US state code
+
+  - name: loyalty_tier
+    expr: "t.loyalty_tier"
+    type: STRING
+    description: Loyalty tier of the customer
+
+  - name: channel
+    expr: "t.channel"
+    type: STRING
+    description: Sales channel
+    allowed_values:
+      Online: ["Online", "online", "web", "website", "ecommerce", "e-commerce"]
+      Store: ["Store", "store", "in-store", "retail store", "physical store"]
+
+  - name: payment_method
+    expr: "t.payment_method"
+    type: STRING
+    description: Payment method used for the order
+    allowed_values:
+      Credit Card: ["Credit Card", "credit card", "card", "cc"]
+      Debit Card: ["Debit Card", "debit card", "debit"]
+      Cash: ["Cash", "cash"]
+      PayPal: ["PayPal", "paypal"]
+
+  - name: store
+    expr: "t.store"
+    type: STRING
+    description: Store associated with the order
+
+defaults:
+  time_dimension: purchase_date
+  max_rows: NULL
+  require_time_filter: false
+  time_filter_default_days: 30

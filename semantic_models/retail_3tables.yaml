@@ -1,0 +1,81 @@
+model_name: retail_3tables
+default_dataset: ${BQ_DEFAULT_DATASET}
+
+tables:
+  customers:
+    description: Customer master data
+    fully_qualified_name: ${BQ_DEFAULT_DATASET}.${BQ_CUSTOMERS_TABLE}
+    primary_key: customer_id
+    columns:
+      customer_id: {type: STRING, description: Unique customer identifier}
+      first_name: {type: STRING, description: Customer first name}
+      last_name: {type: STRING, description: Customer last name}
+      email: {type: STRING, description: Customer email}
+      age: {type: INT64, description: Customer age}
+      gender: {type: STRING, description: Gender}
+      state: {type: STRING, description: US state}
+      signup_date: {type: DATE, description: Signup date}
+      loyalty_tier: {type: STRING, description: Loyalty tier}
+
+  products:
+    description: Product catalog
+    fully_qualified_name: ${BQ_DEFAULT_DATASET}.${BQ_PRODUCTS_TABLE}
+    primary_key: product_id
+    columns:
+      product_id: {type: STRING, description: Unique product identifier}
+      product_name: {type: STRING, description: Product display name}
+      category: {type: STRING, description: Category}
+      subcategory: {type: STRING, description: Subcategory}
+      brand: {type: STRING, description: Brand}
+      age_group: {type: STRING, description: Intended age group}
+      price: {type: NUMERIC, description: List price}
+
+  orders:
+    description: Line-level order transactions
+    fully_qualified_name: ${BQ_DEFAULT_DATASET}.${BQ_ORDERS_TABLE}
+    primary_key: order_line_id
+    columns:
+      order_line_id: {type: STRING, description: Unique order line id}
+      order_id: {type: STRING, description: Order id}
+      purchase_date: {type: DATE, description: Date of purchase}
+      customer_id: {type: STRING, description: Customer id}
+      product_id: {type: STRING, description: Product id}
+      quantity: {type: INT64, description: Units purchased}
+      unit_price: {type: NUMERIC, description: Unit price at time of purchase}
+      discount_pct: {type: FLOAT64, description: Discount percent (0-1)}
+      revenue: {type: NUMERIC, description: Line revenue after discount}
+      channel: {type: STRING, description: Sales channel}
+      payment_method: {type: STRING, description: Payment method}
+      store: {type: STRING, description: Store}
+
+joins:
+  - left_table: orders
+    right_table: customers
+    left_key: customer_id
+    right_key: customer_id
+    relationship: many_to_one
+  - left_table: orders
+    right_table: products
+    left_key: product_id
+    right_key: product_id
+    relationship: many_to_one
+
+metrics:
+  total_revenue: {description: Total revenue, expr: "SUM(orders.revenue)"}
+  total_orders: {description: Distinct orders, expr: "COUNT(DISTINCT orders.order_id)"}
+  total_units: {description: Units sold, expr: "SUM(orders.quantity)"}
+  aov: {description: Average order value, expr: "SAFE_DIVIDE(SUM(orders.revenue), COUNT(DISTINCT orders.order_id))"}
+
+dimensions:
+  - {name: purchase_date, expr: "orders.purchase_date", type: DATE}
+  - {name: category, expr: "products.category", type: STRING}
+  - {name: subcategory, expr: "products.subcategory", type: STRING}
+  - {name: customer_state, expr: "customers.state", type: STRING}
+  - {name: loyalty_tier, expr: "customers.loyalty_tier", type: STRING}
+  - {name: channel, expr: "orders.channel", type: STRING}
+
+defaults:
+  time_dimension: purchase_date
+  max_rows: 200
+  require_time_filter: true
+  time_filter_default_days: 30

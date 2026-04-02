@@ -1,0 +1,99 @@
+model_name: fct_order_lines_enriched
+default_dataset: curated_models_enriched
+tables:
+  fct_order_lines_enriched:
+    description: Semantic model for fct_order_lines_enriched
+    fully_qualified_name: da-aaa-aca.curated_models_enriched.fct_order_lines_enriched
+    primary_key: order_line_id
+    columns: {}
+metrics:
+  total_order_lines_enriched:
+    description: Distinct count of order_line_id
+    label: total fct order lines enriched
+    expr: COUNT(DISTINCT t.order_line_id)
+  total_quantity:
+    description: Total quantity
+    label: total quantity
+    expr: SUM(t.quantity)
+dimensions:
+- name: order_id
+  expr: t.order_id
+  type: STRING
+  description: order_id column
+- name: purchase_date
+  expr: t.purchase_date
+  type: DATE
+  description: purchase_date column
+- name: customer_id
+  expr: t.customer_id
+  type: STRING
+  description: customer_id column
+- name: customer_name
+  expr: t.customer_name
+  type: STRING
+  description: customer_name column
+- name: state
+  expr: t.customer_state
+  type: STRING
+  description: customer_state column
+- name: loyalty_tier
+  expr: t.loyalty_tier
+  type: STRING
+  description: loyalty_tier column
+- name: product_id
+  expr: t.product_id
+  type: STRING
+  description: product_id column
+- name: product_name
+  expr: t.product_name
+  type: STRING
+  description: product_name column
+- name: category
+  expr: t.category
+  type: STRING
+  description: category column
+- name: subcategory
+  expr: t.subcategory
+  type: STRING
+  description: subcategory column
+- name: brand
+  expr: t.brand
+  type: STRING
+  description: brand column
+- name: unit_price
+  expr: t.unit_price
+  type: STRING
+  description: unit_price column
+- name: discount_pct
+  expr: t.discount_pct
+  type: STRING
+  description: discount_pct column
+- name: gross_amount
+  expr: t.gross_amount
+  type: STRING
+  description: gross_amount column
+- name: discount_amount
+  expr: t.discount_amount
+  type: STRING
+  description: discount_amount column
+- name: revenue
+  expr: t.revenue
+  type: STRING
+  description: revenue column
+- name: channel
+  expr: t.channel
+  type: STRING
+  description: channel column
+- name: payment_method
+  expr: t.payment_method
+  type: STRING
+  description: payment_method column
+- name: store
+  expr: t.store
+  type: STRING
+  description: store column
+defaults:
+  time_dimension: purchase_date
+  max_rows: 200
+  require_time_filter: false
+  time_filter_default_days: 30

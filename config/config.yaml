@@ -1,0 +1,30 @@
+app:
+  name: talk_to_data_project
+  page_title: "Talk to the Data"
+  semantic_models_dir: "semantic_models"
+  local_sql_models_dir: "sql_models"
+  generated_semantic_models_dir: "semantic_models/generated"
+
+gcp:
+  project_id: "da-aaa-aca"
+  location: "us-central1"
+
+bigquery:
+  dataset: "curated_models_enriched"
+
+llm:
+  provider: google
+  model: "gemini-2.5-flash"
+  temperature: 0.0
+  max_output_tokens: 1400
+
+agents:
+  talk_to_data:
+    skills_dir: "skills/talk_to_data"
+
+  semantic_model_generator:
+    skills_dir: "skills/semantic_model_generator"
+    output_dir: "semantic_models/generated"
+
+debug:
+  enabled: true
