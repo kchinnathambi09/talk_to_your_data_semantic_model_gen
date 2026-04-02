@@ -63,4 +63,4 @@ The project is designed to provide an end-to-end workflow for natural language a
 Located under:
 
 ```text
-skills/talk_to_data/ 
+skills/talk_to_data/
