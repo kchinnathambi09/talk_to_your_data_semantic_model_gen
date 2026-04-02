@@ -26,7 +26,7 @@ The project is designed to provide an end-to-end workflow for natural language a
 - render results, insights, and charts
 - generate semantic models when one does not exist
 
----
+--- 
 
 ## Features
 
